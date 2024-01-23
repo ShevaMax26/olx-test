@@ -20,14 +20,6 @@ class MailHogMailer
         $this->subject = $subject;
         $this->message = $message;
         $this->from = $from;
-        $this->loadEnv();
-    }
-
-    private function loadEnv(): void
-    {
-        $dotenv = new Dotenv();
-        $dotenv->load(dirname(__DIR__) . '/../.env');
-
         $this->smtpServer = $_ENV['MAIL_HOST'] ?? null;
         $this->smtpPort = $_ENV['MAIL_PORT'] ?? null;
     }

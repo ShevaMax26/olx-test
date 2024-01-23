@@ -16,8 +16,4 @@ $router->addRoute('POST', '/subscribe-announcement', function() use ($request, $
     return (new SubscribeAnnouncementController())->subscribe($request, $connection);
 });
 
-$router->addRoute('GET', '/', function () {
-    dd(22222);
-});
-
 $router->matchRoute();

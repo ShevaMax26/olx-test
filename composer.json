@@ -1,0 +1,25 @@
+{
+    "name": "maxymshevchuk/olx-test",
+    "authors": [
+        {
+            "name": "Maxym Shevchuk",
+            "email": "shevchuk.maxym@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app"
+        }
+    },
+    "require": {
+        "filp/whoops": "^2.15",
+        "symfony/dotenv": "^7.0",
+        "doctrine/dbal": "^3.7",
+        "symfony/var-dumper": "^7.0",
+        "monolog/monolog": "^3.5",
+        "symfony/panther": "^2.1",
+        "dbrekelmans/bdi": "^1.1",
+        "weidner/goutte": "^2.3",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

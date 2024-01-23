@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+
+<?php
+
+use App\Dbal\ConnectionFactory;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Schema;
+use Symfony\Component\Dotenv\Dotenv;
+
+require_once 'vendor/autoload.php';
+
+$dotenv = new Dotenv();
+$dotenv->load('.env');
+
+//Відображення помилок красиве
+if ($_ENV['APP_ENV'] === 'local') {
+    $whoops = new Whoops\Run;
+    $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
+}
+
+//Підключення до бази
+$connectionParams = [
+    'dbname' => $_ENV['DB_DATABASE'],
+    'user' => $_ENV['DB_USERNAME'],
+    'password' => $_ENV['DB_PASSWORD'],
+    'host' => $_ENV['DB_HOST'] . ':' . $_ENV['DB_PORT'],
+    'driver' => $_ENV['DB_DRIVER'],
+];
+/** @var Connection $connection */
+$connection = (new ConnectionFactory($connectionParams))->create();
+$schema = new Schema();
+
+$migrationsPath = "database/migrations";
+$migrationFiles = scandir($migrationsPath);
+$filteredFiles = array_filter($migrationFiles, function ($fileName) {
+    return !in_array($fileName, ['.', '..']);
+});
+$migrationsToApply = array_values($filteredFiles);
+
+foreach ($migrationsToApply as $migration) {
+    $migrationInstance = require $migrationsPath . "/$migration";
+    $migrationInstance->up($schema);
+}
+
+// Збирання запитів в масив
+$sqlArray = $schema->toSql($connection->getDatabasePlatform());
+foreach ($sqlArray as $sql) {
+    //Виконати SQL-запити
+    $connection->executeQuery($sql);
+}
